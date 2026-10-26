@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -euo pipefail
+ROOT=$(cd -- "$(dirname -- "$0")/.." && pwd)
+: "${KERNEL_SRC:=$HOME/Projects/tb311fu-kernel/common}"
+: "${CLANG_BIN:=$HOME/Projects/tb311fu-kernel/toolchains/clang-r510928/bin}"
+: "${KERNEL_OUT:=$ROOT/build/kernel}"
+export PATH="$CLANG_BIN:$PATH" ARCH=arm64 LLVM=1 LLVM_IAS=1
+export KCONFIG_OVERWRITECONFIG=1 KBUILD_BUILD_USER=builder KBUILD_BUILD_HOST=localhost
+export KCFLAGS="${KCFLAGS:-} -D__ANDROID_COMMON_KERNEL__"
+mkdir -p "$KERNEL_OUT"
+if [[ ! -f "$KERNEL_OUT/.config" ]]; then
+    cp "$ROOT/kernel/configs/tb311fu_defconfig" "$KERNEL_OUT/.config"
+fi
+cp "$ROOT/kernel/abi/abi_symbollist.raw" "$KERNEL_OUT/abi_symbollist.raw"
+make -C "$KERNEL_SRC" O="$KERNEL_OUT" olddefconfig
+make -C "$KERNEL_SRC" O="$KERNEL_OUT" -j"${JOBS:-$(nproc)}" Image modules

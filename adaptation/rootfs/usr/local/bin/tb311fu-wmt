@@ -1,0 +1,120 @@
+#!/usr/bin/python3
+"""Native WMT userspace for the TB311FU's vendor MT6768 modules."""
+import fcntl
+import os
+from pathlib import Path
+import select
+import struct
+import subprocess
+import sys
+
+FIRMWARE = Path('/vendor/firmware')
+
+
+def ioctl(fd, command, value=0):
+    result = fcntl.ioctl(fd, command, value)
+    if isinstance(result, int) and result < 0:
+        raise RuntimeError(f'ioctl {command:#x} returned {result}')
+    return result
+
+
+def initialize():
+    if b'mediatek,MT6768' not in Path('/proc/device-tree/compatible').read_bytes():
+        raise RuntimeError('This initializer only supports the TB311FU MT6768 platform')
+    subprocess.run(['modprobe', 'wmt_drv'], check=True)
+    if not Path('/sys/bus/platform/drivers/mtk_wmt').exists():
+        fd = os.open('/dev/wmtdetect', os.O_RDWR)
+        try:
+            ioctl(fd, 0x8004770a)  # CONNSYS_SOC_HW_INIT, before chip query
+        finally:
+            os.close(fd)
+    if not Path('/dev/stpwmt').exists():
+        fd = os.open('/dev/wmtdetect', os.O_RDWR)
+        try:
+            chip = ioctl(fd, 0x80047703)
+            if chip != 0x6768:
+                raise RuntimeError(f'Unexpected chip ID {chip:#x}')
+            for command in (0x40047701, 0x80047705, 0x80047704):
+                ioctl(fd, command, chip)
+        finally:
+            os.close(fd)
+    subprocess.run(['modprobe', 'wlan_drv_gen4m_6768'], check=True)
+    mountpoint = Path('/run/tb311fu-nvdata')
+    mountpoint.mkdir(exist_ok=True)
+    subprocess.run(['mount', '-o', 'ro,noload',
+                    '/dev/disk/by-partlabel/nvdata', str(mountpoint)], check=True)
+    try:
+        calibration = (mountpoint / 'APCFG/APRDEB/WIFI').read_bytes()
+        if len(calibration) != 2050:
+            raise RuntimeError('Unexpected TB311FU calibration size')
+        fd = os.open('/dev/wmtWifi', os.O_WRONLY)
+        try:
+            data = b'WR-BUF:NVRAM' + calibration
+            if os.write(fd, data) != len(data):
+                raise RuntimeError('Incomplete calibration delivery')
+        finally:
+            os.close(fd)
+    finally:
+        subprocess.run(['umount', str(mountpoint)], check=True)
+
+
+def patch_info(kind, name):
+    header = (FIRMWARE / name).read_bytes()[:28]
+    if len(header) != 28:
+        raise RuntimeError(f'Truncated firmware: {name}')
+    address = bytearray(header[24:28])
+    address[0] = 0  # This byte encodes patch count/sequence, not EMI address.
+    return bytearray(struct.pack('<I4s256s', kind, address, name.encode()))
+
+
+def serve():
+    fd = os.open('/dev/stpwmt', os.O_RDWR | os.O_NOCTTY)
+    chip = ioctl(fd, 0x8004a016)
+    if chip != 0x6768:
+        raise RuntimeError(f'Unexpected WMT chip ID {chip:#x}')
+    ioctl(fd, 0x4004a017, chip)
+    ioctl(fd, 0xc008a015, bytearray(b'WMT_SOC.cfg\0'))
+    ioctl(fd, 0x4008a004, bytearray(256))
+    ioctl(fd, 0x4004a005, 0x23)  # BTIF_FULL, FM COMM_IF
+    ioctl(fd, 0x4004a00d, 0)
+    poll = select.poll()
+    poll.register(fd, select.POLLIN)
+    Path('/run/tb311fu-wmt.ready').touch()
+    print('WMT firmware service ready', flush=True)
+    while True:
+        for _, event in poll.poll():
+            if not event & select.POLLIN:
+                raise RuntimeError(f'WMT poll failure: {event}')
+            request = os.read(fd, 256).rstrip(b'\0').decode()
+            print(f'WMT request: {request}', flush=True)
+            try:
+                if request == 'srh_rom_patch':
+                    for kind, component in ((0, 'bt'), (3, 'wifi'), (4, 'mcu')):
+                        name = f'soc1_0_ram_{component}_1a_1_hdr.bin'
+                        ioctl(fd, 0x4008a01f, patch_info(kind, name))
+                elif request == 'srh_patch':
+                    name = 'soc1_0_patch_mcu_1a_1_hdr.bin'
+                    header = (FIRMWARE / name).read_bytes()[:28]
+                    firmware_version = ioctl(fd, 0x8004a00c, 2)
+                    if int.from_bytes(header[22:24], 'big') != firmware_version:
+                        raise RuntimeError('MCU firmware version does not match hardware')
+                    count, sequence = header[24] >> 4, header[24] & 15
+                    if (count, sequence) != (1, 1):
+                        raise RuntimeError('Unexpected MCU patch sequence')
+                    ioctl(fd, 0x4004a00e, count)
+                    ioctl(fd, 0x4008a00f, patch_info(sequence, name))
+                else:
+                    raise RuntimeError(f'Unsupported WMT request: {request}')
+                os.write(fd, b'ok')
+            except Exception as error:
+                print(f'WMT error: {error}', flush=True)
+                os.write(fd, b'failed')
+
+
+if __name__ == '__main__':
+    if sys.argv[1:] == ['init']:
+        initialize()
+    elif sys.argv[1:] == ['serve']:
+        serve()
+    else:
+        raise SystemExit('Usage: tb311fu-wmt init|serve')

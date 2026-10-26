@@ -1,0 +1,157 @@
+#!/usr/bin/python3
+"""Bridge this tablet's vendor H4 transport to the Linux Bluetooth core."""
+import errno
+import os
+from pathlib import Path
+import select
+import signal
+import struct
+import subprocess
+import time
+
+DEBUG = os.environ.get("TB311FU_BT_DEBUG") == "1"
+
+
+def packets(buffer):
+    while buffer:
+        kind = buffer[0]
+        if kind == 1:
+            header, offset, width = 4, 3, 1
+        elif kind == 2:
+            header, offset, width = 5, 3, 2
+        elif kind == 3:
+            header, offset, width = 4, 3, 1
+        elif kind == 4:
+            header, offset, width = 3, 2, 1
+        elif kind == 5:
+            header, offset, width = 5, 3, 2
+        else:
+            raise RuntimeError(f'Invalid H4 packet type {kind:#x}')
+        if len(buffer) < header:
+            return
+        size = int.from_bytes(buffer[offset:offset + width], 'little')
+        if kind == 5:
+            size &= 0x3fff
+        size += header
+        if len(buffer) < size:
+            return
+        packet = bytes(buffer[:size])
+        del buffer[:size]
+        yield packet
+
+
+def send(fd, data):
+    deadline = time.monotonic() + 2
+    while data:
+        try:
+            written = os.write(fd, data)
+        except OSError as error:
+            if error.errno not in (errno.EAGAIN, errno.ENOSPC, errno.EINTR) or time.monotonic() > deadline:
+                raise
+            time.sleep(.01)
+            continue
+        if not written:
+            raise RuntimeError('Empty transport write')
+        data = data[written:]
+
+
+def command(fd, opcode, parameters=b''):
+    send(fd, b'\x01' + struct.pack('<HB', opcode, len(parameters)) + parameters)
+    buffer = bytearray()
+    deadline = time.monotonic() + 5
+    while time.monotonic() < deadline:
+        if not select.select([fd], [], [], .1)[0]:
+            continue
+        try:
+            data = os.read(fd, 4096)
+        except BlockingIOError:
+            continue
+        if not data:
+            time.sleep(.01)
+            continue
+        buffer.extend(data)
+        for packet in packets(buffer):
+            if packet[:2] == b'\x04\x0e' and int.from_bytes(packet[4:6], 'little') == opcode:
+                if len(packet) < 7 or packet[6]:
+                    raise RuntimeError(f'HCI command {opcode:#x} rejected')
+                return packet[7:]
+    raise RuntimeError(f'HCI command {opcode:#x} timed out')
+
+
+def calibration():
+    directory = Path('/run/tb311fu-bt-nvdata')
+    directory.mkdir(exist_ok=True)
+    subprocess.run(['mount', '-o', 'ro,noload', '/dev/disk/by-partlabel/nvdata', str(directory)], check=True)
+    try:
+        record = (directory / 'APCFG/APRDEB/BT_Addr').read_bytes()
+        if len(record) != 5134:
+            raise RuntimeError('Unexpected TB311FU Bluetooth NVRAM size')
+        address = record[:6]
+        if address in (b'\0' * 6, b'\xff' * 6) or address[0] & 1:
+            raise RuntimeError('Invalid factory Bluetooth address')
+        return address
+    finally:
+        subprocess.run(['umount', str(directory)], check=True)
+
+
+def main():
+    if b'mediatek,MT6768' not in Path('/proc/device-tree/compatible').read_bytes():
+        raise RuntimeError('This bridge is only for the TB311FU MT6768')
+    address = calibration()
+    stp = os.open('/dev/stpbt', os.O_RDWR | os.O_NONBLOCK)
+    vhci = None
+    try:
+        command(stp, 0x0c03)
+        print('Controller reset completed', flush=True)
+        current = command(stp, 0x1009)
+        print(f'Factory address already configured: {current == address[::-1]}', flush=True)
+        if current != address[::-1]:
+            command(stp, 0xfc1a, address[::-1])
+            if command(stp, 0x1009) != address[::-1]:
+                raise RuntimeError('Factory Bluetooth address was not applied')
+            print('Factory address applied from local NVRAM', flush=True)
+        vhci = os.open('/dev/vhci', os.O_RDWR | os.O_NONBLOCK)
+        send(vhci, b'\xff\x00')
+        print('HCI bridge registered', flush=True)
+        buffer = bytearray()
+        while True:
+            for fd in select.select([stp, vhci], [], [], 1)[0]:
+                try:
+                    data = os.read(fd, 4096)
+                except BlockingIOError:
+                    continue
+                if not data:
+                    time.sleep(.01)
+                    continue
+                if fd == vhci:
+                    if data[0] != 0xff:
+                        if DEBUG and data[0] == 1:
+                            print(f'TX command {int.from_bytes(data[1:3], "little"):#06x}', flush=True)
+                        send(stp, data)
+                else:
+                    buffer.extend(data)
+                    for packet in packets(buffer):
+                        if DEBUG and packet[:2] == b'\x04\x0e':
+                            print(f'RX complete {int.from_bytes(packet[4:6], "little"):#06x} status={packet[6]:#x}', flush=True)
+                        # This MT6768 firmware advertises synchronization trains,
+                        # but rejects Read Synchronization Train Parameters (0x0c77).
+                        # Hide only that unsupported feature from the Linux core.
+                        if (len(packet) >= 17 and packet[:2] == b'\x04\x0e'
+                                and packet[4:7] == b'\x04\x10\x00'
+                                and packet[7] == 2 and packet[9] & 0x04):
+                            fixed = bytearray(packet)
+                            fixed[9] &= ~0x04
+                            packet = bytes(fixed)
+                            print('Masked unsupported synchronization-train capability', flush=True)
+                        send(vhci, packet)
+    finally:
+        if vhci is not None:
+            os.close(vhci)
+        os.close(stp)
+
+
+if __name__ == '__main__':
+    def stop(*_):
+        raise SystemExit(0)
+    signal.signal(signal.SIGTERM, stop)
+    main()

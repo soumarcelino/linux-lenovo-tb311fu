@@ -1,0 +1,33 @@
+#!/bin/sh
+. /init_functions.sh
+while IFS= read -r module; do
+ [ "$module" != tcpci_late_sync ] || continue
+ modprobe "$module" || echo "TB311FU: failed loading $module" >/dev/kmsg
+done </etc/tb311fu-early.modules
+# Android normally supplies this signal from init.$platform.usb.rc.
+# Without it the first host transition may wait for the vendor timeout.
+[ ! -e /sys/module/musb_hdrc/parameters/kernel_init_done ] || echo 1 >/sys/module/musb_hdrc/parameters/kernel_init_done
+mount -t debugfs debugfs /sys/kernel/debug 2>/dev/null || true
+cat /sys/kernel/debug/devices_deferred >/dev/kmsg 2>/dev/null || true
+# The TCPC must exist before the charger/role consumers probe. Unlike a
+# deferred probe, their -ENODEV failure is not retried automatically.
+for pair in pd_adapter:pd_adapter rt-pd-manager:rt-pd-manager mtk_ctd:mtk_ctd; do
+ driver=${pair%:*}
+ device=${pair#*:}
+ if [ ! -L "/sys/bus/platform/devices/$device/driver" ]; then
+  echo "$device" >"/sys/bus/platform/drivers/$driver/bind" || echo "TB311FU: failed binding $device" >/dev/kmsg
+ fi
+done
+# Start attach/PD events only once every consumer has subscribed.
+modprobe tcpci_late_sync || echo 'TB311FU: failed starting TCPC events' >/dev/kmsg
+setup_usb_network_configfs
+# Request the USB 2.0 configured current instead of the 2 mA default.
+for power in /sys/kernel/config/usb_gadget/*/configs/*/MaxPower; do
+ [ ! -f "$power" ] || echo 500 >"$power"
+done
+# Normal role detection allows unplug/charging-only cables to stop MUSB.
+# Keep the real charger current selection and vendor protections intact.
+[ ! -e /sys/module/musb_hdrc/parameters/musb_force_on ] || echo 0 >/sys/module/musb_hdrc/parameters/musb_force_on
+[ ! -e /sys/devices/platform/mt_usb/musb-hdrc/cmode ] || echo 1 >/sys/devices/platform/mt_usb/musb-hdrc/cmode
+start_unudhcpd
+# Native ext4 root: no Android logical partition mappings.

@@ -1,0 +1,8 @@
+#!/bin/bash
+set -eu
+for name in power gpu cmdq-platform scanout performance; do
+ /usr/local/libexec/tb311fu-$name
+done
+modprobe mtk_iommu
+modprobe hx83102e
+/usr/local/sbin/tb311fu-audio-setup

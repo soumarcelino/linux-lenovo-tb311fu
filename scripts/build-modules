@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+set -euo pipefail
+ROOT=$(cd -- "$(dirname -- "$0")/.." && pwd)
+: "${KERNEL_SRC:=$HOME/Projects/tb311fu-kernel/common}"
+: "${CLANG_BIN:=$HOME/Projects/tb311fu-kernel/toolchains/clang-r510928/bin}"
+: "${KERNEL_OUT:=$ROOT/build/kernel}"
+export PATH="$CLANG_BIN:$PATH" ARCH=arm64 LLVM=1 LLVM_IAS=1
+export KCFLAGS="${KCFLAGS:-} -D__ANDROID_COMMON_KERNEL__"
+if [[ $# == 0 ]]; then set -- gpu bluetooth scanout waydroid; fi
+for module in "$@"; do
+    case "$module" in gpu|bluetooth|scanout|waydroid|panel-tuning|video) ;; *) echo "Unknown module: $module" >&2; exit 1;; esac
+    work="$ROOT/build/modules/$module"
+    mkdir -p "$work"
+    cp -a "$ROOT/kernel/modules/$module/." "$work/"
+    extra=()
+    if [[ -f "$work/vendor.symvers" ]]; then extra+=("KBUILD_EXTRA_SYMBOLS=$work/vendor.symvers"); fi
+    make -C "$KERNEL_SRC" O="$KERNEL_OUT" M="$work" "${extra[@]}" -j"${JOBS:-$(nproc)}" modules
+    while IFS= read -r -d '' ko; do
+        "$KERNEL_OUT/scripts/sign-file" sha1 "$KERNEL_OUT/certs/signing_key.pem" "$KERNEL_OUT/certs/signing_key.x509" "$ko"
+    done < <(find "$work" -name '*.ko' -print0)
+done

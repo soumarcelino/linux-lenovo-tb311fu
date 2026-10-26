@@ -1,0 +1,33 @@
+#!/bin/sh
+ebegin() { echo "$@"; }; eend() { return "$1"; }; eerror() { echo "$@" >&2; }; einfo() { echo "$@"; }; depend() { :; }
+name="TB311FU Panfrost GPU"
+depend() {
+ need localmount
+ after udev
+ before tb311fu-phosh
+}
+start() {
+ ebegin "Loading Panfrost with MediaTek power control"
+ modprobe mtk_gpufreq_mt6768 || return 1
+ if [ -d /sys/module/mali_kbase_mt6768_r49 ]; then
+  rmmod mali_kbase_mt6768_r49 || return 1
+ fi
+ # The existing early-boot image contains the previous Panfrost. Upgrade it
+ # before desktop clients start, without rewriting the boot partitions.
+ if [ -d /sys/module/panfrost ] &&
+    [ ! -r /sys/module/panfrost/parameters/vendor_runtime_pm ]; then
+  local gpu=/sys/bus/platform/devices/13040000.mali
+  if [ "$(cat "$gpu/power/runtime_usage")" != 0 ]; then
+   eerror "Early Panfrost still has runtime PM users; refusing replacement"
+   return 1
+  fi
+  rmmod panfrost || return 1
+  # The old remove callback leaked exactly its own get_sync reference.
+  modprobe panfrost legacy_pm_refs=1 || return 1
+ fi
+ modprobe panfrost || return 1
+ [ -e /dev/dri/renderD128 ]
+ eend $?
+}
+
+start

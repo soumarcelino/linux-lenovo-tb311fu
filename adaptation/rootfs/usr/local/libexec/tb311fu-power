@@ -1,0 +1,16 @@
+#!/bin/sh
+ebegin() { echo "$@"; }; eend() { return "$1"; }; eerror() { echo "$@" >&2; }; einfo() { echo "$@"; }; depend() { :; }
+name="TB311FU power dependencies"
+description="PMIC calibration provider for ADC and deferred probes"
+depend() {
+    need localmount
+    after udev
+    before tb311fu-phosh
+}
+start() {
+    ebegin "Loading MT6358 efuse calibration provider"
+    modprobe nvmem-mt635x-efuse
+    eend $?
+}
+
+start

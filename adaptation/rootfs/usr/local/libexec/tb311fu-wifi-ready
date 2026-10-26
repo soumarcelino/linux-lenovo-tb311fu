@@ -1,0 +1,9 @@
+#!/bin/sh
+set -eu
+for i in $(seq 1 100); do
+ [ ! -e /run/tb311fu-wmt.ready ] || break
+ sleep .1
+done
+[ -e /run/tb311fu-wmt.ready ]
+timeout 45 sh -c 'echo 1 > /dev/wmtWifi'
+[ -e /sys/class/net/wlan0 ]

@@ -1,0 +1,10 @@
+[Unit]
+Description=TB311FU USB ADB
+After=systemd-udev-trigger.service
+[Service]
+ExecStartPre=/usr/local/sbin/tb311fu-adb-usb prepare
+ExecStart=/usr/local/sbin/tb311fu-adbd-run
+ExecStartPost=/usr/local/sbin/tb311fu-adb-usb bind
+Restart=on-failure
+[Install]
+WantedBy=multi-user.target

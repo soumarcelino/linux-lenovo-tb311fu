@@ -1,0 +1,8 @@
+[Unit]
+Description=TB311FU panel backlight synchronization
+After=tb311fu-hardware.service
+[Service]
+ExecStart=/usr/local/sbin/tb311fu-backlight-sync
+Restart=on-failure
+[Install]
+WantedBy=multi-user.target

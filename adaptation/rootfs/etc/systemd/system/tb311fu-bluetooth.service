@@ -1,0 +1,13 @@
+[Unit]
+Description=MediaTek Bluetooth bridge
+Requires=tb311fu-wifi.service
+After=tb311fu-wifi.service
+Before=bluetooth.service
+[Service]
+ExecStartPre=/usr/bin/modprobe bluetooth
+ExecStartPre=/usr/bin/modprobe bt_drv_connac1x
+ExecStartPre=/usr/bin/modprobe hci_vhci
+ExecStart=/usr/local/bin/tb311fu-bt
+Restart=on-failure
+[Install]
+WantedBy=multi-user.target

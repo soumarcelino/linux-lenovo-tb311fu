@@ -1,0 +1,17 @@
+# Generated local payload must come from scripts/stage-kernel.py.
+pkgname=linux-lenovo-tb311fu
+pkgver=6.6.142
+pkgrel=1
+pkgdesc="Experimental Lenovo TB311FU GKI kernel for postmarketOS"
+url="https://android.googlesource.com/kernel/common"
+license="GPL-2.0-only"
+arch="aarch64"
+options="!check !strip !tracedeps"
+depends=""
+source="kernel-local.tar.gz"
+package() {
+ mkdir -p "$pkgdir"
+ cp -a "$srcdir/payload/." "$pkgdir/"
+}
+# stage-kernel.py writes a real checksum after a successful local build.
+sha512sums="f5a318ae139d514a4089e6806210dbdd748ef9cacf66ee368e9231f0fc8755b065a6d7ff67f8b0f698c0ebda46a1b38dc06f97fee79d86d7c5a10545ff2d6c1c  kernel-local.tar.gz"

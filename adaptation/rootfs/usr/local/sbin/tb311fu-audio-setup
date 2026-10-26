@@ -1,0 +1,31 @@
+#!/bin/sh
+set -eu
+modprobe snd-soc-aw883xx
+modprobe mt6768-mt6358
+# Codec initialization and deferred probes finish after modprobe returns.
+attempt=0
+until amixer -c mt6768mt6358 cget name=primary_play_scenario >/dev/null 2>&1; do
+ [ "$attempt" -lt 30 ] || exit 1
+ sleep 1
+ attempt=$((attempt + 1))
+done
+mix() { amixer -q -c mt6768mt6358 cset "name=$1" "$2"; }
+# SRAM uses device memory: ordinary unaligned copy_from_iter can panic.
+# This existing vendor control forces DL1 buffers into normal DRAM.
+mix primary_play_scenario 1
+mix 'I2S1_CH1 DL1_CH1' 1
+mix 'I2S1_CH2 DL1_CH2' 1
+# Vendor rx_volume is attenuation: zero drives the speakers at full gain.
+mix aw_dev_0_rx_volume 192
+mix aw_dev_1_rx_volume 192
+mix aw_dev_0_switch Enable
+mix aw_dev_1_switch Enable
+mix 'Mic Type Mux' ACC
+mix 'PGA L Mux' AIN0
+mix 'PGA R Mux' AIN0
+mix 'ADC L Mux' 'Left Preamplifier'
+mix 'ADC R Mux' 'Right Preamplifier'
+mix 'PGA1 Volume' 2
+mix 'PGA2 Volume' 2
+mix 'UL1_CH1 ADDA_UL_CH1' 1
+mix 'UL1_CH2 ADDA_UL_CH2' 1

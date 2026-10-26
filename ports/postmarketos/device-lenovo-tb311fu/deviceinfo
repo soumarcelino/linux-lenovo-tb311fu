@@ -1,0 +1,13 @@
+# Experimental downstream/GKI bring-up; Android header layout is observed.
+deviceinfo_format_version="0"
+deviceinfo_name="Lenovo Tab TB311FU"
+deviceinfo_manufacturer="Lenovo"
+deviceinfo_codename="lenovo-tb311fu"
+deviceinfo_arch="aarch64"
+deviceinfo_chassis="tablet"
+deviceinfo_drm="false"
+# No flash method until boot/init_boot/vendor_boot handoff is validated.
+deviceinfo_generate_bootimg="false"
+deviceinfo_header_version="4"
+deviceinfo_flash_pagesize="4096"
+deviceinfo_initfs_compression="gzip"

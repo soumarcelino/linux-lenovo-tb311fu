@@ -1,0 +1,5 @@
+0x0bfda5a8	gpufreq_get_cur_freq	mtk_gpufreq_wrapper_legacy	EXPORT_SYMBOL	
+0x484164d5	gpufreq_get_opp_num	mtk_gpufreq_wrapper_legacy	EXPORT_SYMBOL	
+0x686d006d	gpufreq_get_freq_by_idx	mtk_gpufreq_wrapper_legacy	EXPORT_SYMBOL	
+0xf43c8e9e	gpufreq_power_control	mtk_gpufreq_wrapper_legacy	EXPORT_SYMBOL	
+0x83a878ce	gpufreq_commit	mtk_gpufreq_wrapper_legacy	EXPORT_SYMBOL	

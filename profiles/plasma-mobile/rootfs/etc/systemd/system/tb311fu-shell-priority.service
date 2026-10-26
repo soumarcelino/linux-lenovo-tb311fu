@@ -1,0 +1,8 @@
+[Unit]
+Description=TB311FU foreground shell scheduling
+After=tb311fu-plasma.service
+[Service]
+ExecStart=/usr/local/sbin/tb311fu-shell-priority
+Restart=on-failure
+[Install]
+WantedBy=graphical.target

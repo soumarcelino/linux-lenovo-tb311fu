@@ -1,0 +1,61 @@
+diff --git a/daemon/usb.cpp b/daemon/usb.cpp
+index 20bc6c0..54acf0b 100644
+--- a/daemon/usb.cpp
++++ b/daemon/usb.cpp
+@@ -42,6 +42,7 @@
+ 
+ #include <android-base/logging.h>
+ #include <android-base/macros.h>
++#include <android-base/scopeguard.h>
+ #include <android-base/thread_annotations.h>
+ 
+ #if defined(__ANDROID__)
+@@ -412,6 +413,11 @@ struct UsbFfsConnection : public Connection {
+         worker_thread_ = std::thread([this]() {
+             adb_thread_setname("UsbFfs-worker");
+             VLOG(USB) << "UsbFfs-worker thread spawned";
++#if defined(ADB_STANDALONE_LINUX)
++            auto mark_finished = android::base::make_scope_guard([this]() {
++                worker_finished_.store(true);
++            });
++#endif
+ 
+             for (size_t i = 0; i < kUsbReadQueueDepth; ++i) {
+                 read_requests_[i] = CreateReadBlock(next_read_id_++);
+@@ -443,6 +449,18 @@ struct UsbFfsConnection : public Connection {
+         }
+ 
+         pthread_t worker_thread_handle = worker_thread_.native_handle();
++#if defined(ADB_STANDALONE_LINUX)
++        // glibc keeps an exited, joinable pthread valid until join(). Testing
++        // pthread_kill(thread, 0) for ESRCH therefore never ends on Linux.
++        Stop();
++        while (!worker_finished_.load()) {
++            int rc = pthread_kill(worker_thread_handle, kInterruptionSignal);
++            if (rc != 0 && rc != ESRCH) {
++                LOG(ERROR) << "failed to interrupt USB worker: " << strerror(rc);
++            }
++            std::this_thread::sleep_for(100ms);
++        }
++#else
+         while (true) {
+             int rc = pthread_kill(worker_thread_handle, kInterruptionSignal);
+             if (rc != 0) {
+@@ -461,6 +479,7 @@ struct UsbFfsConnection : public Connection {
+                 LOG(ERROR) << "failed to send interruption signal to worker: " << strerror(rc);
+             }
+         }
++#endif
+ 
+         worker_thread_.join();
+     }
+@@ -694,6 +713,9 @@ struct UsbFfsConnection : public Connection {
+ 
+     bool worker_started_;
+     std::thread worker_thread_;
++#if defined(ADB_STANDALONE_LINUX)
++    std::atomic<bool> worker_finished_{false};
++#endif
+ 
+     std::atomic<bool> stopped_;
+     std::promise<void> destruction_notifier_;

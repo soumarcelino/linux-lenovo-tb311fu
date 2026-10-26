@@ -1,0 +1,12 @@
+diff --git a/certs/extract-cert.c b/certs/extract-cert.c
+index 5c3c881f1..78fa36598 100644
+--- a/certs/extract-cert.c
++++ b/certs/extract-cert.c
+@@ -102,6 +102,7 @@ int main(int argc, char **argv)
+ {
+ 	char *cert_src;
+ 	char *verbose_env;
++	const char *key_pass = getenv("KBUILD_SIGN_PIN");
+ 
+ 	OpenSSL_add_all_algorithms();
+ 	ERR_load_crypto_strings();

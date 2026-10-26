@@ -1,0 +1,3 @@
+0x495673b9	vcu_func	mtk_vcodec_common	EXPORT_SYMBOL_GPL	
+0xd1c0131f	vcu_get_task	mtk_vcu	EXPORT_SYMBOL_GPL	
+0x7f479fb5	vcu_put_task	mtk_vcu	EXPORT_SYMBOL_GPL	

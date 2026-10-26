@@ -1,0 +1,622 @@
+{
+  "source_project": "postmarketos-lenovo-tb311fu",
+  "source_commit": "185ed43fadbf476f2faf6b0a9ab88f3a24e1fb5f",
+  "note": "Imported from the working tree; source hashes identify the original inputs. Paths and configuration may be adapted.",
+  "files": [
+    {
+      "source": "kernel/minimal.config",
+      "path": "kernel/configs/minimal.config",
+      "source_sha256": "d6e1ce794ba230e67d38348271f889150e1e57bfea07d01d9a7f672e97bc66e6"
+    },
+    {
+      "source": "kernel/postmarketos.config",
+      "path": "kernel/configs/postmarketos.config",
+      "source_sha256": "03eb0078ce7e25cfc45f913f2c60cf34c1f83bd562f33f386989884244215fea"
+    },
+    {
+      "source": "out-minimal/.config",
+      "path": "kernel/configs/tb311fu_defconfig",
+      "source_sha256": "323c8c0db8111c0d6f0fe2f2247e051b3e3b6a6bde3c79e18d389dac89306857"
+    },
+    {
+      "source": "tb311fu-kernel/device/running.config",
+      "path": "kernel/configs/android.config",
+      "source_sha256": "77b74c67f4bb9df728c041cb5262c43802a0cf1bb3a04cdbf710b6b20962765b"
+    },
+    {
+      "source": "out-minimal/abi_symbollist.raw",
+      "path": "kernel/abi/abi_symbollist.raw",
+      "source_sha256": "261051bb93452f1086657d8a483a027f4ed2c2261b9f582d369295ab261acb9b"
+    },
+    {
+      "source": "provenance/host-openssl.patch",
+      "path": "kernel/patches/0001-host-openssl.patch",
+      "source_sha256": "65dd285b3c8a9b3d9010fdf6ff93cef06e31165b36090f97a94dfb37dbef8f5a"
+    },
+    {
+      "source": "tb311fu-kernel/common/COPYING",
+      "path": "kernel/COPYING",
+      "source_sha256": "fb5a425bd3b3cd6071a3a9aff9909a859e7c1158d54d32e07658398cd67eb6a0"
+    },
+    {
+      "source": "device/gpu/Makefile",
+      "path": "kernel/modules/gpu/Makefile",
+      "source_sha256": "bcebe484d349898cbd2dff38b6d846fec0f1a85975c308532622e07406700173"
+    },
+    {
+      "source": "device/gpu/vendor.symvers",
+      "path": "kernel/modules/gpu/vendor.symvers",
+      "source_sha256": "916c8f1eb62e9fa376b156d328c867f7584d99305e41ed56e86527f9b57c0802"
+    },
+    {
+      "source": "device/gpu/panfrost/Kconfig",
+      "path": "kernel/modules/gpu/panfrost/Kconfig",
+      "source_sha256": "05df336aed17bf2b6825799daa2d05b03c7bd7ae247f1edfd17adec5ae64c271"
+    },
+    {
+      "source": "device/gpu/panfrost/Makefile",
+      "path": "kernel/modules/gpu/panfrost/Makefile",
+      "source_sha256": "2cbda23191b24e8c5f81ae97745cf4a0f72000d2c2f458630ed2ce95d4e45783"
+    },
+    {
+      "source": "device/gpu/panfrost/panfrost_devfreq.c",
+      "path": "kernel/modules/gpu/panfrost/panfrost_devfreq.c",
+      "source_sha256": "66100687a0ee85695e927ecbc1d287cae95b6a523a526a9db1e704bd7c865a17"
+    },
+    {
+      "source": "device/gpu/panfrost/panfrost_devfreq.h",
+      "path": "kernel/modules/gpu/panfrost/panfrost_devfreq.h",
+      "source_sha256": "4173d3af7de4ff066da1e63196512b213874c8218dcaf074b6395e5375863262"
+    },
+    {
+      "source": "device/gpu/panfrost/panfrost_device.c",
+      "path": "kernel/modules/gpu/panfrost/panfrost_device.c",
+      "source_sha256": "3a0f3f82881558a31139c8fc477a8794a87729c060050377fdf9667f40d703b3"
+    },
+    {
+      "source": "device/gpu/panfrost/panfrost_device.h",
+      "path": "kernel/modules/gpu/panfrost/panfrost_device.h",
+      "source_sha256": "bea555102a17fffede639fc87a1ba37686e21f131bb71c9278808fdceff80736"
+    },
+    {
+      "source": "device/gpu/panfrost/panfrost_drv.c",
+      "path": "kernel/modules/gpu/panfrost/panfrost_drv.c",
+      "source_sha256": "47a004c1a8fcd83bdd23922e5c5390436d2308d8b8a8a8b9f48c785aa538ea01"
+    },
+    {
+      "source": "device/gpu/panfrost/panfrost_dump.c",
+      "path": "kernel/modules/gpu/panfrost/panfrost_dump.c",
+      "source_sha256": "5e5bf55cf086711179bc8ba7126c329cdac4c144d942e8821f8cc5df2ddfc67f"
+    },
+    {
+      "source": "device/gpu/panfrost/panfrost_dump.h",
+      "path": "kernel/modules/gpu/panfrost/panfrost_dump.h",
+      "source_sha256": "eda7f0d24fd0e9976239baaf0512485cb6ce06ed5fd49ea22369aa3cc5118d03"
+    },
+    {
+      "source": "device/gpu/panfrost/panfrost_features.h",
+      "path": "kernel/modules/gpu/panfrost/panfrost_features.h",
+      "source_sha256": "bead1ee3d62c3cd92e0edc2c92fe98492abe23d1d2ea835849a8070b5ea6211e"
+    },
+    {
+      "source": "device/gpu/panfrost/panfrost_gem.c",
+      "path": "kernel/modules/gpu/panfrost/panfrost_gem.c",
+      "source_sha256": "41511e2d1e589b89daf762f18461427467febe14e5e1354571b07541df445fd9"
+    },
+    {
+      "source": "device/gpu/panfrost/panfrost_gem.h",
+      "path": "kernel/modules/gpu/panfrost/panfrost_gem.h",
+      "source_sha256": "5ee835548de01f1fa722a87ca12ded70944507333fdfcbbd19bef0ecd01724a2"
+    },
+    {
+      "source": "device/gpu/panfrost/panfrost_gem_shrinker.c",
+      "path": "kernel/modules/gpu/panfrost/panfrost_gem_shrinker.c",
+      "source_sha256": "0e169015ce224fbeae63cf1cb830a236b97faf276a3ee44cfb39f13c28472411"
+    },
+    {
+      "source": "device/gpu/panfrost/panfrost_gpu.c",
+      "path": "kernel/modules/gpu/panfrost/panfrost_gpu.c",
+      "source_sha256": "9747620fbcad8952226075c2a63603bdd45f158bd9068a381a4ad8cf1668df60"
+    },
+    {
+      "source": "device/gpu/panfrost/panfrost_gpu.h",
+      "path": "kernel/modules/gpu/panfrost/panfrost_gpu.h",
+      "source_sha256": "f59ab2afa6c2f52a738a78e7c6c3c2b45e5ba60da0fd6c1020334f08bdbbf6e5"
+    },
+    {
+      "source": "device/gpu/panfrost/panfrost_issues.h",
+      "path": "kernel/modules/gpu/panfrost/panfrost_issues.h",
+      "source_sha256": "6e31a4fbb362099113c2f71e621cef1bf92916d960396ed6f4abc6ea7deebe78"
+    },
+    {
+      "source": "device/gpu/panfrost/panfrost_job.c",
+      "path": "kernel/modules/gpu/panfrost/panfrost_job.c",
+      "source_sha256": "cbf4e12642e00b2dcf447b13004b7aba44a438f114ff12ae610d86635475382d"
+    },
+    {
+      "source": "device/gpu/panfrost/panfrost_job.h",
+      "path": "kernel/modules/gpu/panfrost/panfrost_job.h",
+      "source_sha256": "e3aea962b6fb01f9fa72e68bd03998c27e6097de4e38d939557cbe4014076dfe"
+    },
+    {
+      "source": "device/gpu/panfrost/panfrost_mmu.c",
+      "path": "kernel/modules/gpu/panfrost/panfrost_mmu.c",
+      "source_sha256": "4cc3209984cdf140b04e2f6bdc2fe5410ea85b06a1afafe0891339d94a6ee285"
+    },
+    {
+      "source": "device/gpu/panfrost/panfrost_mmu.h",
+      "path": "kernel/modules/gpu/panfrost/panfrost_mmu.h",
+      "source_sha256": "173f5fc6b8f82fb198c74a03221829a7d572c46e0b932b4da6e1c82f141ddc86"
+    },
+    {
+      "source": "device/gpu/panfrost/panfrost_perfcnt.c",
+      "path": "kernel/modules/gpu/panfrost/panfrost_perfcnt.c",
+      "source_sha256": "1c62903e4e1af39196e2263dc029cfce85210039a18cf18d727665412acecf67"
+    },
+    {
+      "source": "device/gpu/panfrost/panfrost_perfcnt.h",
+      "path": "kernel/modules/gpu/panfrost/panfrost_perfcnt.h",
+      "source_sha256": "72bdcec69f8828a9c78b010aee1d0181dbe4c136d282d4efc5366d0f51779fd8"
+    },
+    {
+      "source": "device/gpu/panfrost/panfrost_regs.h",
+      "path": "kernel/modules/gpu/panfrost/panfrost_regs.h",
+      "source_sha256": "1905790cb25154f5d1b5c9c7097f96fb5e58b8bc70125be20d390017ecde0706"
+    },
+    {
+      "source": "device/gpu/panfrost/gki_helpers.c",
+      "path": "kernel/modules/gpu/panfrost/gki_helpers.c",
+      "source_sha256": "1cdb24234dbed94cf24fb106e8562752f910338168327e89f995a2ff785ed013"
+    },
+    {
+      "source": "device/gpu/panfrost/panfrost_vendor.h",
+      "path": "kernel/modules/gpu/panfrost/panfrost_vendor.h",
+      "source_sha256": "b389c81972459100106a69341def738ca4008b7feb3663739dd47e5631228b9e"
+    },
+    {
+      "source": "device/gpu/scheduler/Makefile",
+      "path": "kernel/modules/gpu/scheduler/Makefile",
+      "source_sha256": "c112ea82bdf1dadec90036eb7687ceb071ad3d6f5b82f45e56688ff967b73da2"
+    },
+    {
+      "source": "device/gpu/scheduler/gpu_scheduler_trace.h",
+      "path": "kernel/modules/gpu/scheduler/gpu_scheduler_trace.h",
+      "source_sha256": "1d78e025718d0c10765e9c5bae39806bad6c23a670bbd5041e40f1772c015925"
+    },
+    {
+      "source": "device/gpu/scheduler/sched_entity.c",
+      "path": "kernel/modules/gpu/scheduler/sched_entity.c",
+      "source_sha256": "0fc7c4a4310c016561feb55e727716a17791c494db6d905cbf4d34741473b9d8"
+    },
+    {
+      "source": "device/gpu/scheduler/sched_fence.c",
+      "path": "kernel/modules/gpu/scheduler/sched_fence.c",
+      "source_sha256": "c0c9b992a72b5c2e53c6db2bd82a8530e80c141fa815e3d556ac31f12320952d"
+    },
+    {
+      "source": "device/gpu/scheduler/sched_main.c",
+      "path": "kernel/modules/gpu/scheduler/sched_main.c",
+      "source_sha256": "d31c866b4364dd8460a000e3442017af312fa83446f6be514428f782b9b1763f"
+    },
+    {
+      "source": "device/bluetooth/hci_vhci.c",
+      "path": "kernel/modules/bluetooth/hci_vhci.c",
+      "source_sha256": "907bb0e708c11439221f6eee8a389e434b14ff567b83006e510d0e581f3e8a51"
+    },
+    {
+      "source": "device/bluetooth/Makefile",
+      "path": "kernel/modules/bluetooth/Makefile",
+      "source_sha256": "626c615f710431862c52127131bb18dbf6d8d96c30b12430683656e402203c64"
+    },
+    {
+      "source": "device/scanout/Makefile",
+      "path": "kernel/modules/scanout/Makefile",
+      "source_sha256": "2feafee304c7cc1a5931ba70a0c0e3629f84b490fd35348e34e24be134c67fa0"
+    },
+    {
+      "source": "device/scanout/tb311fu_scanout.c",
+      "path": "kernel/modules/scanout/tb311fu_scanout.c",
+      "source_sha256": "dbce0c8f65bfc1450567d232fe276b62eb0cdb9a1cfc775b06e8bbe298e26bb9"
+    },
+    {
+      "source": "device/panel-tuning/tb311fu_ssc.c",
+      "path": "kernel/modules/panel-tuning/tb311fu_ssc.c",
+      "source_sha256": "ea8c5d39231c9e040c8b5faebde6f2586f736432864f5e40efae8bb61e034a41"
+    },
+    {
+      "source": "device/panel-tuning/Makefile",
+      "path": "kernel/modules/panel-tuning/Makefile",
+      "source_sha256": "5bf5d3d68e68b09cb2f6b9f0611aae1fe1b3235c8da8b43ec1ba2b450940dd26"
+    },
+    {
+      "source": "device/panel-tuning/tb311fu_cc.c",
+      "path": "kernel/modules/panel-tuning/tb311fu_cc.c",
+      "source_sha256": "01a48fd7ee07f77d3e4dc372e92f8525c3a3e1d2f5de1a2675e023367c2122db"
+    },
+    {
+      "source": "device/panel-tuning/tb311fu_reinit.c",
+      "path": "kernel/modules/panel-tuning/tb311fu_reinit.c",
+      "source_sha256": "876bd0b0ca35870beac0c66668901d09d30d0dba40b09e31c43f582a7a0989b0"
+    },
+    {
+      "source": "device/video/mtk-vcodec-preflight.S",
+      "path": "kernel/modules/video/mtk-vcodec-preflight.S",
+      "source_sha256": "ad8af4987a9c983c74913111ae52e8ca5ef477f6774c420a6e7c39b79d164954"
+    },
+    {
+      "source": "device/video/vcodec_guard.c",
+      "path": "kernel/modules/video/vcodec_guard.c",
+      "source_sha256": "bddc8a69a53d17d9a3aa3b2bbc4ad84e3c31cef40fd25d9c1ba96563585c1018"
+    },
+    {
+      "source": "device/video/Makefile",
+      "path": "kernel/modules/video/Makefile",
+      "source_sha256": "667854e8c60ce90df8a61e5747ce2902848692aef2c559fc50fa10c6ce4d61d4"
+    },
+    {
+      "source": "device/video/vcodec-scs.lds",
+      "path": "kernel/modules/video/vcodec-scs.lds",
+      "source_sha256": "1198faf5c2933e0f115fa0b8eac9a65a06a99f72c5a8f45dd1ef6e21cc699021"
+    },
+    {
+      "source": "device/video/vcodec_runtime.c",
+      "path": "kernel/modules/video/vcodec_runtime.c",
+      "source_sha256": "a824efa1ba7476acdd0708cb0c47b5278bd132c24cb0a37ad3da7d1924dcba2a"
+    },
+    {
+      "source": "device/video/vendor.symvers",
+      "path": "kernel/modules/video/vendor.symvers",
+      "source_sha256": "81ac7d851f019017d8a6078aa4cb20c8576de3d9ad07f22fac973cbcb7467308"
+    },
+    {
+      "source": "device/waydroid/Makefile",
+      "path": "kernel/modules/waydroid/Makefile",
+      "source_sha256": "49886a012d9d148991d0a79f1740ba9b8dd86d4e9ba78d5977220666b45632cc"
+    },
+    {
+      "source": "device/waydroid/xt_CHECKSUM.c",
+      "path": "kernel/modules/waydroid/xt_CHECKSUM.c",
+      "source_sha256": "89704fcca2980012ffc2fed43c40d99b4e191096025baff777dddb652a965fd3"
+    },
+    {
+      "source": "device/archlinuxarm/migration/arch-init.c",
+      "path": "adaptation/src/boot/arch-init.c",
+      "source_sha256": "e405b696911554fe2968a941aa331ac6fe85cf630321a758adf1957138a78986"
+    },
+    {
+      "source": "device/power/upower-mm8013-status.c",
+      "path": "adaptation/src/power/upower-mm8013-status.c",
+      "source_sha256": "ff00b6a0fc71ea383de37eac62dbe065c7d566b72adb3fbd6bab98ba621bb957"
+    },
+    {
+      "source": "device/camera/camera-probe.py",
+      "path": "adaptation/rootfs/usr/local/libexec/tb311fu-camera/camera-probe.py",
+      "source_sha256": "e50bb12c247b72a89cc0d49dd337b4838f8f9d4a13f1d84e425c268cbb250e3f"
+    },
+    {
+      "source": "device/camera/camera-frame.py",
+      "path": "adaptation/rootfs/usr/local/libexec/tb311fu-camera/camera-frame.py",
+      "source_sha256": "1156e06317628b59961eca54fdc0110e8c8d48373be1b200f57652dc3512e6af"
+    },
+    {
+      "source": "device/camera/camera-app.py",
+      "path": "adaptation/rootfs/usr/local/libexec/tb311fu-camera/camera-app.py",
+      "source_sha256": "7f90a21351f5d954c6668b63f729230c004a70fe05af45ae0d4b2df0c87edf83"
+    },
+    {
+      "source": "device/camera/org.postmarketos.tb311fu.Camera.desktop",
+      "path": "adaptation/rootfs/usr/share/applications/tb311fu-camera.desktop",
+      "source_sha256": "55eca277ffa7d0d85b19a1b62b3e6e660b9ecd6f401238676bb11b20ab5233c2"
+    },
+    {
+      "source": "device/archlinuxarm/rootfs/usr/local/bin/tb311fu-plasma-session",
+      "path": "profiles/plasma-mobile/rootfs/usr/local/bin/tb311fu-plasma-session",
+      "source_sha256": "d33262593db561c6cbdaa8099948bb0d19a0dc9eaaee7453e3b8593b6788f57d"
+    },
+    {
+      "source": "device/archlinuxarm/rootfs/usr/local/bin/tb311fu-plasmashell",
+      "path": "profiles/plasma-mobile/rootfs/usr/local/bin/tb311fu-plasmashell",
+      "source_sha256": "0c2c816075209574d81b250a7c1e1dc364ba513e611e43e3d43a4a45c3b5ea01"
+    },
+    {
+      "source": "device/archlinuxarm/rootfs/usr/local/libexec/tb311fu-cmdq-platform",
+      "path": "adaptation/rootfs/usr/local/libexec/tb311fu-cmdq-platform",
+      "source_sha256": "ce3ea07c5c47091a52e09549775f68c8c6e33e36ad2241bb884ea6142a3828db"
+    },
+    {
+      "source": "device/archlinuxarm/rootfs/usr/local/libexec/tb311fu-gpu",
+      "path": "adaptation/rootfs/usr/local/libexec/tb311fu-gpu",
+      "source_sha256": "badf011fe62976e6ba1069376b65b704d5e24bed979f5eaaa3dd3b07d7ef4406"
+    },
+    {
+      "source": "device/archlinuxarm/rootfs/usr/local/libexec/tb311fu-hardware",
+      "path": "adaptation/rootfs/usr/local/libexec/tb311fu-hardware",
+      "source_sha256": "3e99495235f20553fed223584e15c72c967094ad2f04cec750681aa289215067"
+    },
+    {
+      "source": "device/archlinuxarm/rootfs/usr/local/libexec/tb311fu-performance",
+      "path": "adaptation/rootfs/usr/local/libexec/tb311fu-performance",
+      "source_sha256": "01a73b833a5f141f53360eced73c32b043cba4bad31b00a23dc491b44a9fb2d5"
+    },
+    {
+      "source": "device/archlinuxarm/rootfs/usr/local/libexec/tb311fu-power",
+      "path": "adaptation/rootfs/usr/local/libexec/tb311fu-power",
+      "source_sha256": "c6186a99d70e9e7c6bfea86af84c6e11b3d9dc50aca131d7f999784a7bc2361a"
+    },
+    {
+      "source": "device/archlinuxarm/rootfs/usr/local/libexec/tb311fu-scanout",
+      "path": "adaptation/rootfs/usr/local/libexec/tb311fu-scanout",
+      "source_sha256": "b680b9f903849b653c7f7605a6a14c1de39aee7c1d57aedcb4cce2a8d2d15de6"
+    },
+    {
+      "source": "device/archlinuxarm/rootfs/usr/local/libexec/tb311fu-stop-plasma",
+      "path": "profiles/plasma-mobile/rootfs/usr/local/libexec/tb311fu-stop-plasma",
+      "source_sha256": "1e5c8671c6e33f745cfa2079e4dfee5b19acc53a0f1a6e04028234b7b8e83ec3"
+    },
+    {
+      "source": "device/archlinuxarm/rootfs/usr/local/libexec/tb311fu-wifi-ready",
+      "path": "adaptation/rootfs/usr/local/libexec/tb311fu-wifi-ready",
+      "source_sha256": "1b237db6b356ba2c54cf88472c98be5f416370f1055ad1ad296a65a881fb525b"
+    },
+    {
+      "source": "device/archlinuxarm/rootfs/usr/local/sbin/tb311fu-shell-priority",
+      "path": "profiles/plasma-mobile/rootfs/usr/local/sbin/tb311fu-shell-priority",
+      "source_sha256": "af8a86d357c8fd70cf1f4cb7e9a7ed7ab08983495b4c361fbe94bd4d77ff93b3"
+    },
+    {
+      "source": "device/archlinuxarm/rootfs/etc/pam.d/tb311fu-plasma",
+      "path": "profiles/plasma-mobile/rootfs/etc/pam.d/tb311fu-plasma",
+      "source_sha256": "1792e534d1b168bd041faa238ca358652b40f0be19c7236347d96f63a531350f"
+    },
+    {
+      "source": "device/archlinuxarm/rootfs/etc/wireplumber/wireplumber.conf.d/51-tb311fu-audio.conf",
+      "path": "adaptation/rootfs/etc/wireplumber/wireplumber.conf.d/51-tb311fu-audio.conf",
+      "source_sha256": "1fdec51329e0e503884d48deaa6782ef82b6c41180ceac4faef5c75dc10f715d"
+    },
+    {
+      "source": "device/archlinuxarm/rootfs/etc/systemd/journald.conf.d/tb311fu.conf",
+      "path": "adaptation/rootfs/etc/systemd/journald.conf.d/tb311fu.conf",
+      "source_sha256": "0ed9955cf20aa9f72ade3690ad55760e306a1c7718aaf8131fb9cad1025fa826"
+    },
+    {
+      "source": "device/archlinuxarm/rootfs/etc/systemd/logind.conf.d/tablet.conf",
+      "path": "adaptation/rootfs/etc/systemd/logind.conf.d/tablet.conf",
+      "source_sha256": "9c7c21ba4eb07b422023d66ef6cf3afb71db54cb1a0b417764afe70597ff3571"
+    },
+    {
+      "source": "device/archlinuxarm/rootfs/etc/systemd/system/tb311fu-adbd.service",
+      "path": "adaptation/rootfs/etc/systemd/system/tb311fu-adbd.service",
+      "source_sha256": "b62349f1fce263cc7584215507a1f4977e47d1814304f1aef61e2ebe9ab23a72"
+    },
+    {
+      "source": "device/archlinuxarm/rootfs/etc/systemd/system/tb311fu-backlight.service",
+      "path": "adaptation/rootfs/etc/systemd/system/tb311fu-backlight.service",
+      "source_sha256": "e1698ea660e269fb5a2c9ccafeb04ce9642360946958c3386bee04185dc996a3"
+    },
+    {
+      "source": "device/archlinuxarm/rootfs/etc/systemd/system/tb311fu-bluetooth.service",
+      "path": "adaptation/rootfs/etc/systemd/system/tb311fu-bluetooth.service",
+      "source_sha256": "4e2883ff1d3b1fe10cb5b66e975d431c4ec2d486be4714e7b3141250a80d200a"
+    },
+    {
+      "source": "device/archlinuxarm/rootfs/etc/systemd/system/tb311fu-hardware.service",
+      "path": "adaptation/rootfs/etc/systemd/system/tb311fu-hardware.service",
+      "source_sha256": "b5aa3809485df991444880fef3e108209c9252a57d0c922fb7a6a1d1638eda91"
+    },
+    {
+      "source": "device/archlinuxarm/rootfs/etc/systemd/system/tb311fu-plasma.service",
+      "path": "profiles/plasma-mobile/rootfs/etc/systemd/system/tb311fu-plasma.service",
+      "source_sha256": "726991a50af2e9219868cac1acc35d0b8cb808e66fbf93f88e96a7a0335fd750"
+    },
+    {
+      "source": "device/archlinuxarm/rootfs/etc/systemd/system/tb311fu-shell-priority.service",
+      "path": "profiles/plasma-mobile/rootfs/etc/systemd/system/tb311fu-shell-priority.service",
+      "source_sha256": "8babe4af35f34b85f6576544cfaa5c5f952f0bee4ad6e767524b34a7ac0e0f51"
+    },
+    {
+      "source": "device/archlinuxarm/rootfs/etc/systemd/system/tb311fu-wifi.service",
+      "path": "adaptation/rootfs/etc/systemd/system/tb311fu-wifi.service",
+      "source_sha256": "de005883243bed06bef7860716ba04d52ab8513267a7195215c89ca0e8123902"
+    },
+    {
+      "source": "device/archlinuxarm/rootfs/etc/systemd/system/systemd-journald.service.d/tablet.conf",
+      "path": "adaptation/rootfs/etc/systemd/system/systemd-journald.service.d/tablet.conf",
+      "source_sha256": "43c300a5d0d1b1b02159fa164a64637bbe384fa7a7aa42699e7ad40cfcbc0ff4"
+    },
+    {
+      "source": "device/archlinuxarm/rootfs/etc/systemd/system/upower.service.d/tablet.conf",
+      "path": "adaptation/rootfs/etc/systemd/system/upower.service.d/tablet.conf",
+      "source_sha256": "d8f327215dcd51f39a55cb72280b9a67e78d370e3c30f61e37e720328d8cad58"
+    },
+    {
+      "source": "device/archlinuxarm/rootfs/etc/systemd/system/waydroid-container.service.d/tablet.conf",
+      "path": "adaptation/rootfs/etc/systemd/system/waydroid-container.service.d/tablet.conf",
+      "source_sha256": "2de8b1d9980ee97f29763787db2e1ad3797c22de6d9e2b60d50f28fc0e961cea"
+    },
+    {
+      "source": "device/archlinuxarm/plasma-mobile-20261026/rootfs/usr/local/bin/tb311fu-plasma-session",
+      "path": "profiles/plasma-mobile/rootfs/usr/local/bin/tb311fu-plasma-session",
+      "source_sha256": "d33262593db561c6cbdaa8099948bb0d19a0dc9eaaee7453e3b8593b6788f57d"
+    },
+    {
+      "source": "device/archlinuxarm/plasma-mobile-20261026/rootfs/usr/local/bin/tb311fu-plasmashell",
+      "path": "profiles/plasma-mobile/rootfs/usr/local/bin/tb311fu-plasmashell",
+      "source_sha256": "0c2c816075209574d81b250a7c1e1dc364ba513e611e43e3d43a4a45c3b5ea01"
+    },
+    {
+      "source": "device/archlinuxarm/plasma-mobile-20261026/rootfs/usr/local/bin/tb311fu-wmt",
+      "path": "adaptation/rootfs/usr/local/bin/tb311fu-wmt",
+      "source_sha256": "6a2ea71a1e979954ea416eee88f27b6d9659a3300f2922e8da62517d92b9c6bc"
+    },
+    {
+      "source": "device/archlinuxarm/plasma-mobile-20261026/rootfs/usr/local/libexec/tb311fu-hardware",
+      "path": "adaptation/rootfs/usr/local/libexec/tb311fu-hardware",
+      "source_sha256": "abf6d0e331771264b5cb87c7d99b3f005b01c698284a7c0ad669b8a15a85fe13"
+    },
+    {
+      "source": "device/archlinuxarm/plasma-mobile-20261026/rootfs/usr/local/libexec/tb311fu-wifi-ready",
+      "path": "adaptation/rootfs/usr/local/libexec/tb311fu-wifi-ready",
+      "source_sha256": "1b237db6b356ba2c54cf88472c98be5f416370f1055ad1ad296a65a881fb525b"
+    },
+    {
+      "source": "device/archlinuxarm/plasma-mobile-20261026/rootfs/usr/local/sbin/tb311fu-shell-priority",
+      "path": "profiles/plasma-mobile/rootfs/usr/local/sbin/tb311fu-shell-priority",
+      "source_sha256": "af8a86d357c8fd70cf1f4cb7e9a7ed7ab08983495b4c361fbe94bd4d77ff93b3"
+    },
+    {
+      "source": "device/archlinuxarm/plasma-mobile-20261026/rootfs/usr/local/sbin/tb311fu-audio-setup",
+      "path": "adaptation/rootfs/usr/local/sbin/tb311fu-audio-setup",
+      "source_sha256": "a273260f062a5fa01b4c78329c18017ed14a26cd1f069839beb3a8fde71824d2"
+    },
+    {
+      "source": "device/archlinuxarm/plasma-mobile-20261026/rootfs/etc/pam.d/kde",
+      "path": "adaptation/rootfs/etc/pam.d/kde",
+      "source_sha256": "c835e0e59f313faf284eef66534fdcf86d99e6901d70c3bc3b61dfba3771aa1b"
+    },
+    {
+      "source": "device/archlinuxarm/plasma-mobile-20261026/rootfs/etc/pam.d/tb311fu-plasma",
+      "path": "profiles/plasma-mobile/rootfs/etc/pam.d/tb311fu-plasma",
+      "source_sha256": "1792e534d1b168bd041faa238ca358652b40f0be19c7236347d96f63a531350f"
+    },
+    {
+      "source": "device/archlinuxarm/plasma-mobile-20261026/rootfs/etc/systemd/system/tb311fu-plasma.service",
+      "path": "profiles/plasma-mobile/rootfs/etc/systemd/system/tb311fu-plasma.service",
+      "source_sha256": "726991a50af2e9219868cac1acc35d0b8cb808e66fbf93f88e96a7a0335fd750"
+    },
+    {
+      "source": "device/archlinuxarm/plasma-mobile-20261026/rootfs/etc/systemd/system/tb311fu-hardware.service",
+      "path": "adaptation/rootfs/etc/systemd/system/tb311fu-hardware.service",
+      "source_sha256": "b5aa3809485df991444880fef3e108209c9252a57d0c922fb7a6a1d1638eda91"
+    },
+    {
+      "source": "device/archlinuxarm/plasma-mobile-20261026/rootfs/etc/systemd/system/tb311fu-wifi.service",
+      "path": "adaptation/rootfs/etc/systemd/system/tb311fu-wifi.service",
+      "source_sha256": "de005883243bed06bef7860716ba04d52ab8513267a7195215c89ca0e8123902"
+    },
+    {
+      "source": "device/archlinuxarm/plasma-mobile-20261026/rootfs/etc/systemd/system/tb311fu-bluetooth.service",
+      "path": "adaptation/rootfs/etc/systemd/system/tb311fu-bluetooth.service",
+      "source_sha256": "4e2883ff1d3b1fe10cb5b66e975d431c4ec2d486be4714e7b3141250a80d200a"
+    },
+    {
+      "source": "device/archlinuxarm/plasma-mobile-20261026/rootfs/etc/systemd/system/tb311fu-shell-priority.service",
+      "path": "profiles/plasma-mobile/rootfs/etc/systemd/system/tb311fu-shell-priority.service",
+      "source_sha256": "8babe4af35f34b85f6576544cfaa5c5f952f0bee4ad6e767524b34a7ac0e0f51"
+    },
+    {
+      "source": "device/bluetooth/tb311fu-bt",
+      "path": "adaptation/rootfs/usr/local/bin/tb311fu-bt",
+      "source_sha256": "ce47dabcf902b069e571d105ef8c2ed4dd70f1b2a6a00ea48122f36f23a427b3"
+    },
+    {
+      "source": "device/bluetooth/80-tb311fu-rfkill.rules",
+      "path": "adaptation/rootfs/etc/udev/rules.d/80-tb311fu-rfkill.rules",
+      "source_sha256": "08dc1c3198c4aab39650ac31b3b0077f7689f031f647329f23815b2bb9a1d389"
+    },
+    {
+      "source": "device/audio/89-tb311fu-audio.rules",
+      "path": "adaptation/rootfs/etc/udev/rules.d/89-tb311fu-audio.rules",
+      "source_sha256": "a89e30a4ea9e19be15d0db566665e266b4721ced84c54042269518a33a054bc6"
+    },
+    {
+      "source": "device/power/tb311fu-backlight-sync",
+      "path": "adaptation/rootfs/usr/local/sbin/tb311fu-backlight-sync",
+      "source_sha256": "c1ff982fc756c7ae2e981fb79c448c65c90ca4ac1a967083f6c20293162542be"
+    },
+    {
+      "source": "device/power/tb311fu-usb-init.sh",
+      "path": "adaptation/rootfs/usr/local/libexec/tb311fu-usb-init",
+      "source_sha256": "61dc374c8f303dc01b8944c598f5655e0636b6a22d35e142da0ad830ff1fc897"
+    },
+    {
+      "source": "device/adb/tb311fu-adb-usb.py",
+      "path": "adaptation/rootfs/usr/local/sbin/tb311fu-adb-usb",
+      "source_sha256": "a8f13cf91d8ee3f46cef3629042c54a3fa3c505e8e219069f866f14f133ad0e9"
+    },
+    {
+      "source": "device/adb/tb311fu-adbd-run",
+      "path": "adaptation/rootfs/usr/local/sbin/tb311fu-adbd-run",
+      "source_sha256": "8de8c8a042e6b349ff27a0a1cf0a61b31005328f79987974f53b250ca32516ed"
+    },
+    {
+      "source": "device/adb/source.json",
+      "path": "adaptation/src/adb/source.json",
+      "source_sha256": "87c2acc1daf3193eac24f3656eedeceedfecb1d0f96417ac3600b632e5c9d1fe"
+    },
+    {
+      "source": "device/adb/tb311fu-root-service.patch",
+      "path": "adaptation/src/adb/tb311fu-root-service.patch",
+      "source_sha256": "5d1f927599e8ad23917c706cdd3023b067439a2ff5cff11de32b324d854a83ba"
+    },
+    {
+      "source": "device/adb/tb311fu-linux-reconnect.patch",
+      "path": "adaptation/src/adb/tb311fu-linux-reconnect.patch",
+      "source_sha256": "0214587a33ecb2bb60085c00a117e324a38279d5f667c24d3c53102bdbef0331"
+    },
+    {
+      "source": "device/archlinuxarm/plasma-mobile-20261026/org.kde.plasmashell.desktop",
+      "path": "profiles/plasma-mobile/user-config/autostart/org.kde.plasmashell.desktop",
+      "source_sha256": "dcb4991c08bff87828764f7b43eaef9ce55c5558cae4a6498ee53f6a70be0870"
+    },
+    {
+      "source": "device/archlinuxarm/plasma-mobile-20261026/packages.txt",
+      "path": "profiles/plasma-mobile/packages.txt",
+      "source_sha256": "132b97699897e23d114872d76f6a086261a519965af49dfb3a91661dda1b60b0"
+    },
+    {
+      "source": "device/archlinuxarm/plasma-mobile-20261026/package-versions.txt",
+      "path": "profiles/plasma-mobile/package-versions.txt",
+      "source_sha256": "a961f55fc8fc945c4e4a7a0d82ba20196b67498fdec13a6dabfa7412cb260295"
+    },
+    {
+      "source": "device/archlinuxarm/plasma-mobile-20261026/recover-touch.sh",
+      "path": "profiles/plasma-mobile/recover-touch.sh",
+      "source_sha256": "f10683b637eb0ee2b3cf39d6ac2fab5d8e2803db5022ef9adebf70eaa93589af"
+    },
+    {
+      "source": "ports/device-lenovo-tb311fu/APKBUILD",
+      "path": "ports/postmarketos/device-lenovo-tb311fu/APKBUILD",
+      "source_sha256": "42bc5310f96d8f19f8537ea81ee3f5e258b42c4a07d16a916e2ea2df1c181619"
+    },
+    {
+      "source": "ports/linux-lenovo-tb311fu/APKBUILD",
+      "path": "ports/postmarketos/linux-lenovo-tb311fu/APKBUILD",
+      "source_sha256": "7a926465ae19866d0506ae9a7bf706a79cb1062044694f2206f1fb633c6db807"
+    },
+    {
+      "source": "ports/device-lenovo-tb311fu/deviceinfo",
+      "path": "ports/postmarketos/device-lenovo-tb311fu/deviceinfo",
+      "source_sha256": "763e6873329f2acdb7b28825ecccdb28e8e962e42b393041bf3b5b4e4a273515"
+    },
+    {
+      "source": "scripts/check-vendor-abi.py",
+      "path": "scripts/check-vendor-abi.py",
+      "source_sha256": "2ee66fe03211cef45f5ef0383f42cdeccba4ff1dd3a078fcd951844f7bf8044b"
+    },
+    {
+      "source": "scripts/build-adb-root.py",
+      "path": "scripts/build-adb-root.py",
+      "source_sha256": "af38c384ed3e2eed8ab8d0e54d661254ddaf96abc47cbb2594457b3548371e31"
+    },
+    {
+      "source": "scripts/build-wifi-charging-driver.py",
+      "path": "scripts/build-wifi-charging-driver.py",
+      "source_sha256": "8b24dbc170628f221009ed54f4b0bcc15668de0ab65404790f11fd416269b750"
+    },
+    {
+      "source": "scripts/capture-drm.py",
+      "path": "scripts/diagnostics/capture-drm.py",
+      "source_sha256": "375c6846346487adae4cb952edd7fc867a50179ca443f756ca377ef16872204f"
+    },
+    {
+      "source": "scripts/measure-arch-panel.py",
+      "path": "scripts/diagnostics/measure-arch-panel.py",
+      "source_sha256": "d15c1ebfe3bac1376432c605f67c0ea19ce93143002537a2dcefeb733045b805"
+    },
+    {
+      "source": "device/diagnostics/display-sync-capture.py",
+      "path": "scripts/diagnostics/display-sync-capture.py",
+      "source_sha256": "3108b1293827785b1d75701f205d3950ca3057e780c0f150c7f5b8158a0ed7fc"
+    }
+  ]
+}

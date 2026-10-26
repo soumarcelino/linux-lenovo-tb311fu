@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Camera
+Comment=Lenovo TB311FU front and rear cameras
+Exec=python3 /usr/local/libexec/tb311fu-camera/camera-app.py
+Icon=camera-photo
+Terminal=false
+Categories=AudioVideo;Video;Photography;
+StartupNotify=true
+X-KDE-FormFactor=handset;tablet;desktop;

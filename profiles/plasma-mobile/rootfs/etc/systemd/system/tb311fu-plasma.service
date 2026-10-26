@@ -1,0 +1,22 @@
+[Unit]
+Description=Plasma Mobile automatic session
+Requires=tb311fu-hardware.service
+After=tb311fu-hardware.service systemd-logind.service dbus.service
+Wants=systemd-logind.service tb311fu-backlight.service
+[Service]
+User=@USER@
+Group=@GROUP@
+PAMName=tb311fu-plasma
+WorkingDirectory=@HOME@
+Environment=HOME=@HOME@
+Environment=XDG_SESSION_CLASS=user
+Environment=XDG_SEAT=seat0
+Environment=XDG_CURRENT_DESKTOP=KDE
+Environment=XDG_SESSION_TYPE=wayland
+Environment=XDG_RUNTIME_DIR=/run/user/@UID@
+ExecStart=/usr/local/bin/tb311fu-plasma-session
+ExecStopPost=/usr/local/libexec/tb311fu-stop-plasma
+Restart=always
+RestartSec=3
+[Install]
+WantedBy=graphical.target

@@ -1,0 +1,42 @@
+#!/bin/sh
+ebegin() { echo "$@"; }; eend() { return "$1"; }; eerror() { echo "$@" >&2; }; einfo() { echo "$@"; }; depend() { :; }
+name="TB311FU native scanout compatibility"
+description="MediaTek plane formats and dma-buf fences for the exact supported vendor driver"
+depend() {
+ need localmount tb311fu-gpu
+ before tb311fu-plasma tb311fu-phosh tb311fu-display
+}
+start() {
+ ebegin "Enabling TB311FU native scanout"
+ [ "$(uname -r)" = 6.6.142-pmos-minimal+ ] || return 1
+ local module=/lib/modules/$(uname -r)/extra/mediatek/mediatek-drm.ko
+ local expected=39df257c51fc9f5f44c83939281df6676c13d6aab348549ca7d997d02e159ff2
+ if [ "$(sha256sum "$module" | cut -d' ' -f1)" != "$expected" ]; then
+  eerror "Unsupported MediaTek DRM input; retaining userspace fallback"
+  return 1
+ fi
+ # Also identify the driver actually loaded from the early-boot image.
+ local note=/sys/module/mediatek_drm/notes/.note.gnu.build-id
+ if [ "$(sha256sum "$note" | cut -d' ' -f1)" != "cf6bea0d309e2d3fbe4a93c229164f0907231845cee0d2c628734e4677584839" ]; then
+  eerror "Loaded MediaTek DRM does not match the validated input"
+  return 1
+ fi
+ modprobe tb311fu_scanout apply=1 || return 1
+ [ "$(cat /sys/module/tb311fu_scanout/parameters/apply)" = Y ]
+ eend $?
+}
+stop() {
+ if pgrep -x kwin_wayland >/dev/null; then
+  eerror "Stop tb311fu-plasma before removing its plane callbacks"
+  return 1
+ fi
+ ebegin "Restoring original MediaTek plane callbacks and formats"
+ # Remove only our callback adapter: modprobe -r also attempts to unload
+ # mediatek_drm, which stays referenced by the vendor display stack.
+ if [ -d /sys/module/tb311fu_scanout ]; then
+  rmmod tb311fu_scanout
+ fi
+ eend $?
+}
+
+start

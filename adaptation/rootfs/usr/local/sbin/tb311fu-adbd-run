@@ -1,0 +1,12 @@
+#!/bin/sh
+set -eu
+# Never let adbd fall back to a network listener if FunctionFS is unavailable.
+[ -e /dev/usb-ffs/adb/ep0 ] || exit 1
+export ADBD_PORT=0
+export ADB_TCP_PORT=0
+export ADBD_SHELL=/bin/sh
+export HOME=/root
+export TMPDIR=/tmp
+export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+cd /root
+exec /usr/local/sbin/adbd --device_banner=device

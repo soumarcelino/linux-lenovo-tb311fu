@@ -1,0 +1,4 @@
+plasma-mobile plasma-settings plasma-nm bluedevil networkmanager bluez bluez-utils
+pipewire pipewire-audio pipewire-pulse wireplumber alsa-utils papirus-icon-theme
+angelfish audiotube dolphin itinerary kalk kasts kclock keysmith merkuro neochat
+qmlkonsole tokodon plasma-systemmonitor plasma-integration

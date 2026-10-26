@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+ROOT=$(cd -- "$(dirname -- "$0")/.." && pwd)
+: "${CC:=aarch64-linux-gnu-gcc}"
+out="$ROOT/dist/userspace"
+mkdir -p "$out/usr/local/lib/tb311fu" "$out/boot"
+"$CC" -O2 -Wall -static "$ROOT/adaptation/src/boot/arch-init.c" -o "$out/boot/arch-init"
+"$CC" -O2 -Wall -shared -fPIC "$ROOT/adaptation/src/power/upower-mm8013-status.c" -o "$out/usr/local/lib/tb311fu/upower-mm8013-status.so" -ldl

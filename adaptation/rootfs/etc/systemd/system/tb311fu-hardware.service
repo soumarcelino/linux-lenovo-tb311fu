@@ -1,0 +1,10 @@
+[Unit]
+Description=Lenovo TB311FU display, GPU, touch, audio and power
+After=systemd-udev-trigger.service
+Before=tb311fu-plasma.service
+[Service]
+Type=oneshot
+ExecStart=/usr/local/libexec/tb311fu-hardware
+RemainAfterExit=yes
+[Install]
+WantedBy=multi-user.target

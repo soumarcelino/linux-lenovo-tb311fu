@@ -1,0 +1,12 @@
+[Unit]
+Description=MediaTek WMT Wi-Fi firmware
+After=systemd-udev-trigger.service
+Before=NetworkManager.service
+[Service]
+ExecStartPre=/usr/local/bin/tb311fu-wmt init
+ExecStart=/usr/local/bin/tb311fu-wmt serve
+ExecStartPost=/usr/local/libexec/tb311fu-wifi-ready
+TimeoutStartSec=90
+Restart=on-failure
+[Install]
+WantedBy=multi-user.target

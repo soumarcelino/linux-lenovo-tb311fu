@@ -1,0 +1,36 @@
+#!/bin/sh
+ebegin() { echo "$@"; }; eend() { return "$1"; }; eerror() { echo "$@" >&2; }; einfo() { echo "$@"; }; depend() { :; }
+name="TB311FU performance profile"
+description="Stock maximum CPU/GPU clocks, retaining vendor thermal limit priority"
+depend() {
+ need localmount tb311fu-gpu
+ before tb311fu-phosh
+}
+start() {
+ ebegin "Enabling MediaTek CPU DVFS and performance governors"
+ modprobe CPU_DVFS || { eend 1; return 1; }
+ local p found=0
+ for p in /sys/devices/system/cpu/cpufreq/policy*; do
+  [ -f "$p/scaling_governor" ] || continue
+  echo performance > "$p/scaling_governor" || { eend 1; return 1; }
+  found=1
+ done
+ [ "$found" -eq 1 ] || { eend 1; return 1; }
+ # POWERHAL has lower priority than thermal/battery limits. Do not use DEBUG
+ # or fix_target_opp_index: retain the normal vendor DVFS path.
+ grep -q '10 *POWERHAL' /proc/gpufreqv2/limit_table || { eend 1; return 1; }
+ printf 'set 10 -1 0\n' > /proc/gpufreqv2/limit_table
+ eend $?
+}
+stop() {
+ ebegin "Returning CPU/GPU performance requests to normal"
+ local p
+ for p in /sys/devices/system/cpu/cpufreq/policy*; do
+  [ -f "$p/scaling_governor" ] || continue
+  echo schedutil > "$p/scaling_governor" || { eend 1; return 1; }
+ done
+ printf 'set 10 -1 -1\n' > /proc/gpufreqv2/limit_table
+ eend $?
+}
+
+start

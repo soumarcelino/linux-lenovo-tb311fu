@@ -1,0 +1,87 @@
+#!/usr/bin/env python3
+"""Add/remove ADB on the existing NCM gadget without changing USB roles."""
+from pathlib import Path
+import os
+import subprocess
+import sys
+import time
+
+GADGET = Path('/sys/kernel/config/usb_gadget/g1')
+FUNCTION = GADGET / 'functions/ffs.adb'
+LINK = GADGET / 'configs/c.1/ffs.adb'
+MOUNT = Path('/dev/usb-ffs/adb')
+STATE = Path('/run/tb311fu-adbd.udc')
+UDC = GADGET / 'UDC'
+
+
+def disconnect():
+    value = UDC.read_text().strip()
+    if value:
+        STATE.write_text(value + '\n')
+        UDC.write_text('\n')
+
+
+def bind():
+    value = STATE.read_text().strip() if STATE.exists() else 'musb-hdrc'
+    assert (Path('/sys/class/udc') / value).is_dir(), 'UDC unavailable'
+    if UDC.read_text().strip() != value:
+        UDC.write_text(value + '\n')
+
+
+def mounted():
+    return any(line.split()[1] == str(MOUNT)
+               for line in Path('/proc/mounts').read_text().splitlines())
+
+
+def cleanup():
+    disconnect()
+    LINK.unlink(missing_ok=True)
+    if mounted():
+        subprocess.run(['umount', str(MOUNT)], check=True)
+    if FUNCTION.exists():
+        FUNCTION.rmdir()
+    # Leave NCM and its DHCP daemon intact, and restore the original UDC.
+    bind()
+
+
+assert os.geteuid() == 0
+operation = sys.argv[1]
+if operation == 'prepare':
+    assert (GADGET / 'configs/c.1/ncm.usb0').is_symlink(), 'NCM gadget unavailable'
+    assert (Path('/sys/class/udc/musb-hdrc')).is_dir()
+    disconnect()
+    try:
+        FUNCTION.mkdir(exist_ok=True)
+        MOUNT.mkdir(parents=True, exist_ok=True)
+        if not mounted():
+            subprocess.run(['mount', '-t', 'functionfs', '-o', 'uid=0,gid=0',
+                            'adb', str(MOUNT)], check=True)
+        if not LINK.is_symlink():
+            LINK.symlink_to(FUNCTION)
+        # File sync and shell use the normal Linux filesystem.
+        Path('/data/local/tmp').mkdir(parents=True, exist_ok=True)
+        Path('/data/local/tmp').chmod(0o1777)
+    except BaseException:
+        cleanup()
+        raise
+elif operation == 'bind':
+    for attempt in range(100):
+        if (MOUNT / 'ep1').exists() and (MOUNT / 'ep2').exists():
+            # FunctionFS supplies the ADB interface's Microsoft descriptors.
+            os_desc = GADGET / 'os_desc'
+            (os_desc / 'qw_sign').write_text('MSFT100\n')
+            (os_desc / 'b_vendor_code').write_text('0x1\n')
+            if not (os_desc / 'c.1').is_symlink():
+                (os_desc / 'c.1').symlink_to(GADGET / 'configs/c.1')
+            (os_desc / 'use').write_text('1\n')
+            bind()
+            break
+        time.sleep(0.1)
+    else:
+        raise SystemExit('adbd did not publish its FunctionFS endpoints')
+elif operation == 'disconnect':
+    disconnect()
+elif operation == 'cleanup':
+    cleanup()
+else:
+    raise SystemExit('Expected prepare, bind, disconnect or cleanup')

@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Plasma Mobile
+Exec=/usr/local/bin/tb311fu-plasmashell
+OnlyShowIn=KDE;
+X-KDE-autostart-phase=0
+X-systemd-skip=true
+NoDisplay=true

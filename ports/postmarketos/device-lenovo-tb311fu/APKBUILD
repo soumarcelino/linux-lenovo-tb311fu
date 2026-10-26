@@ -1,0 +1,19 @@
+# Local experimental port, not an upstream-supported device.
+pkgname=device-lenovo-tb311fu
+pkgver=0.1
+pkgrel=1
+pkgdesc="Lenovo Tab TB311FU experimental GKI port"
+url="https://postmarketos.org"
+license="MIT"
+arch="aarch64"
+options="!check !archcheck"
+depends="postmarketos-base linux-lenovo-tb311fu android-tools"
+makedepends="devicepkg-dev"
+source="deviceinfo"
+build() {
+ devicepkg_build "$startdir" "$pkgname"
+}
+package() {
+ devicepkg_package "$startdir" "$pkgname"
+}
+sha512sums="bc4f26c80b5828a622913120941fb46dd3664cb8249427551edd25d9cb9fff506805a83f3077e740c66f03424342e8b724f51a64aed23545ebb82d74ff18c26a  deviceinfo"

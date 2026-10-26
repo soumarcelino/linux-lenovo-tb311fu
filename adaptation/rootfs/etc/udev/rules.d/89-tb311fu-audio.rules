@@ -1,0 +1,2 @@
+# Avoid a second generic PulseAudio device opening the same vendor PCM.
+SUBSYSTEM=="sound", KERNEL=="card*", KERNELS=="sound", ATTR{id}=="mt6768mt6358", ENV{PULSE_IGNORE}="1"

@@ -1,0 +1,4 @@
+#!/bin/sh
+pkill -TERM -u @USER@ -x kwin_wayland || true
+pkill -TERM -u @USER@ -x plasmashell || true
+pkill -TERM -u @USER@ -f ^/usr/bin/kwin_wayland_wrapper || true

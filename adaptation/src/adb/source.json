@@ -1,0 +1,12 @@
+{
+  "project": "https://github.com/happyme531/standalone-linux-adbd",
+  "commit": "bdb5cdc4b516b3bc71fd2b805bc36190041a9393",
+  "version": "36.0.1",
+  "root_default": true,
+  "transport": "USB FunctionFS + existing NCM network",
+  "authentication": "none; USB transport only",
+  "patches": [
+    "tb311fu-root-service.patch",
+    "tb311fu-linux-reconnect.patch"
+  ]
+}

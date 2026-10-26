@@ -1,0 +1,3 @@
+# The OpenRC Phosh session has no VT and does not receive the uaccess ACL.
+# netdev members already manage this tablet's radios through NetworkManager.
+SUBSYSTEM=="misc", KERNEL=="rfkill", GROUP="netdev", MODE="0660"

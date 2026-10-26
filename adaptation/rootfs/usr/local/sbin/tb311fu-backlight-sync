@@ -1,0 +1,75 @@
+#!/usr/bin/python3
+"""Keep the vendor PWM backlight in sync with the internal DRM output."""
+from pathlib import Path
+import re
+import signal
+import time
+
+LED = Path('/sys/class/leds/lcd-backlight/brightness')
+CARD = Path('/dev/dri/by-path/platform-14000000.dispsys_config-card')
+CACHE = Path('/run/tb311fu-backlight/brightness')
+running = True
+blanked = False
+saved = None
+last_error = None
+
+
+def stop(*unused):
+    global running
+    running = False
+
+
+def panel_active():
+    card = CARD.resolve(strict=True).name.removeprefix('card')
+    state = Path('/sys/kernel/debug/dri', card, 'state').read_text()
+    connector = re.search(r'^connector\[\d+\]: DSI-1\n\tcrtc=(.*)$', state, re.M)
+    if not connector:
+        raise ValueError('DSI-1 is not available')
+    crtc = connector[1]
+    if crtc == '(null)':
+        return False
+    block = re.search(r'^crtc\[\d+\]: ' + re.escape(crtc) + r'\n((?:\t.*\n)*)', state, re.M)
+    if not block:
+        raise ValueError('Internal CRTC is not available')
+    return '\tactive=1\n' in block[1]
+
+
+signal.signal(signal.SIGTERM, stop)
+signal.signal(signal.SIGINT, stop)
+CACHE.parent.mkdir(mode=0o700, exist_ok=True)
+try:
+    saved = int(CACHE.read_text())
+except (OSError, ValueError):
+    pass
+
+while running:
+    try:
+        active = panel_active()
+        brightness = int(LED.read_text())
+        if active:
+            if blanked:
+                # Apply after the CRTC is running, so the panel can accept light.
+                LED.write_text(str(saved))
+                print(f'Backlight restored: {saved}', flush=True)
+                blanked = False
+            elif brightness != saved:
+                saved = brightness
+                CACHE.write_text(str(saved))
+        else:
+            if not blanked:
+                # Keep the cache when restarting while the light is already off.
+                if brightness or saved is None:
+                    saved = brightness
+                    CACHE.write_text(str(saved))
+                blanked = True
+            if brightness:
+                saved = brightness
+                CACHE.write_text(str(saved))
+                LED.write_text('0')
+                print(f'Backlight off; saved brightness: {saved}', flush=True)
+        last_error = None
+    except (OSError, ValueError) as error:
+        if str(error) != last_error:
+            print(f'Backlight sync waiting: {error}', flush=True)
+            last_error = str(error)
+    time.sleep(0.2)

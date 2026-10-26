@@ -1,0 +1,22 @@
+diff --git a/daemon/services.cpp b/daemon/services.cpp
+index 152603c..0f1557b 100644
+--- a/daemon/services.cpp
++++ b/daemon/services.cpp
+@@ -280,6 +280,17 @@ unique_fd daemon_service_to_fd(std::string_view name, atransport* transport) {
+         return unique_fd{};
+     }
+ 
++#if defined(ADB_STANDALONE_LINUX)
++    // OpenRC owns the Linux daemon's UID; no Android property service exists.
++    if (name == "root:") {
++        return create_service_thread("root", [](unique_fd fd) {
++            WriteFdExactly(fd.get(), getuid() == 0
++                    ? "adbd is already running as root\n"
++                    : "adbd must be started as root by its Linux service\n");
++        });
++    }
++#endif
++
+ #if defined(__ANDROID__) && !defined(__ANDROID_RECOVERY__)
+     if (name.starts_with("abb:") || name.starts_with("abb_exec:")) {
+         return execute_abb_command(name);

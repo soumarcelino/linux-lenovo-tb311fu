@@ -1,0 +1,9 @@
+{
+  "repository": "https://android.googlesource.com/kernel/common",
+  "commit": "1782065b5f3dad41d3785247e50820553c3473e6",
+  "tag": "android15-6.6.142_r00",
+  "toolchain": "Android Clang r510928 (11368308)",
+  "patches": [
+    "patches/0001-host-openssl.patch"
+  ]
+}

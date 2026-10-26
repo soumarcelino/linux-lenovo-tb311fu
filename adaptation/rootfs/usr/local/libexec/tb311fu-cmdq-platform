@@ -1,0 +1,30 @@
+#!/bin/sh
+ebegin() { echo "$@"; }; eend() { return "$1"; }; eerror() { echo "$@" >&2; }; einfo() { echo "$@"; }; depend() { :; }
+name="TB311FU CMDQ platform callbacks"
+description="Register the matching MT6768 CMDQ callbacks without replacing vendor drivers"
+
+depend() {
+ need localmount
+ before tb311fu-scanout tb311fu-plasma tb311fu-display
+}
+
+start() {
+ ebegin "Registering TB311FU CMDQ platform"
+ local release=6.6.142-pmos-minimal+
+ local modules=/lib/modules/$release/extra/mediatek
+ [ "$(uname -r)" = "$release" ] || { eerror "Unsupported kernel; retaining current CMDQ fallback"; return 1; }
+ [ "$(sha256sum "$modules/cmdq-platform-mt6768.ko" | cut -d' ' -f1)" = fd43a7e4ebdf2a5442ce16f9ccb350c0759d41299621eda4ccb83abc47677825 ] || { eerror "Unsupported CMDQ platform binary"; return 1; }
+ [ "$(sha256sum "$modules/mtk-cmdq-drv-ext.ko" | cut -d' ' -f1)" = 2304d5842cd974e43c5b680bf5126d02e87d1f361b1f87eae48d8bad7bb387d6 ] || { eerror "Unsupported CMDQ controller binary"; return 1; }
+ modprobe mtk_cmdq_drv_ext || return 1
+ [ "$(sha256sum /sys/module/mtk_cmdq_drv_ext/notes/.note.gnu.build-id | cut -d' ' -f1)" = e3b027a47c6a4a59f510126fd040a4142bd16b093f99ea10a1381b56e1e1c30f ] || { eerror "Loaded CMDQ controller differs from validated binary"; return 1; }
+ modprobe cmdq_platform_mt6768 || return 1
+ [ -d /sys/module/cmdq_platform_mt6768 ] || return 1
+ eend 0
+}
+
+stop() {
+ # Consumers can retain callback pointers. Keep the module until kernel exit.
+ einfo "CMDQ callbacks retained until shutdown; no live driver unload"
+}
+
+start

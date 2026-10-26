@@ -1,0 +1,61 @@
+#!/usr/bin/python3
+"""Keep UI threads on big cores; release inherited affinity in launched apps."""
+import os
+from pathlib import Path
+import time
+
+TARGETS = {'plasmashell', 'kwin_wayland'}
+ALL = set(range(8))
+BIG = set(range(8))
+tracked = set()
+while True:
+    processes = {}
+    for path in Path('/proc').iterdir():
+        if not path.name.isdigit():
+            continue
+        try:
+            if path.stat().st_uid != int("@UID@"):
+                continue
+            stat = (path / 'stat').read_text().rsplit(')', 1)[1].split()
+            processes[int(path.name)] = ((path / 'comm').read_text().strip(), int(stat[1]), stat[19])
+        except (OSError, ValueError, IndexError):
+            continue
+    current = {pid for pid, (name, _, _) in processes.items() if name in TARGETS}
+    # Children inherit affinity/nice. Restore all eight CPUs and normal priority
+    # for descendants; never restrict applications launched from the home.
+    descendants = set(current)
+    for _ in range(16):
+        expanded = descendants | {p for p, (_, parent, _) in processes.items() if parent in descendants}
+        if expanded == descendants:
+            break
+        descendants = expanded
+    for pid in descendants:
+        try:
+            name, _, born = processes[pid]
+            identity = (pid, born)
+            target = pid in current
+            if not target and identity in tracked:
+                continue
+            for thread in Path(f'/proc/{pid}/task').iterdir():
+                tid = int(thread.name)
+                if target:
+                    if os.sched_getaffinity(tid) != BIG:
+                        os.sched_setaffinity(tid, BIG)
+                    if os.getpriority(os.PRIO_PROCESS, tid) > -10:
+                        os.setpriority(os.PRIO_PROCESS, tid, -10)
+                else:
+                    if os.sched_getaffinity(tid) <= BIG:
+                        os.sched_setaffinity(tid, ALL)
+                    if os.getpriority(os.PRIO_PROCESS, tid) == -10:
+                        os.setpriority(os.PRIO_PROCESS, tid, 0)
+            if target:
+                p = Path(f'/proc/{pid}/oom_score_adj')
+                if p.read_text().strip() != '-500':
+                    p.write_text('-500')
+            elif Path(f'/proc/{pid}/oom_score_adj').read_text().strip() == '-500':
+                Path(f'/proc/{pid}/oom_score_adj').write_text('0')
+            tracked.add(identity)
+        except (OSError, ValueError):
+            continue
+    tracked.intersection_update({(p, info[2]) for p, info in processes.items()})
+    time.sleep(2)
